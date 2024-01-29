@@ -1,52 +1,43 @@
 import { View, TextInput, Button, Text, StyleSheet, FlatList } from 'react-native';
 import { useState } from 'react';
+import GoalInput from './components/GoalInput';
 
 
 export default function App() {
 
-  // declaramos el hook de estado de componente "newGoal"
-  const [newGoal, setNewGoal] = useState("");
+
   const [myGoals, setMyGoals] = useState([]);
 
-  function textChangeHandler(enteredText) {
-    setNewGoal(enteredText);
-  }
 
-  function addGoalHandler() {
-    setMyGoals(myCurrentGoals => [...myCurrentGoals, newGoal])
+
+  /*
+  sustituimos  setMyGoals(myCurrentGoals => [...myCurrentGoals, newGoal])
+  para en vez de añadir texto añadamos objetos
+  */
+  function addGoalHandler(newGoal) {
+    setMyGoals(myCurrentGoals => [...myCurrentGoals,
+    {
+      id: Date.now(),
+      text: newGoal,
+    }
+    ])
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          onChangeText={textChangeHandler}
-          style={styles.textInput}
-          placeholder='Input your Goal!!'
-        />
-        <Button
-          title='Add Goal'
-          onPress={addGoalHandler}
-        />
-      </View>
-      <View style={styles.goalsContainer}>
 
-        <FlatList
-          data={myGoals}
-          renderItem={(dataItem) => (
-            <View style={styles.goalItem} key={dataItem.item}>
-              <Text style={styles.goalText}>{dataItem.item}</Text>
-            </View>
-          )
-          }
-        />
-
-
-
-
-
-      </View>
+    <View style={styles.goalsContainer}>
+      <GoalInput onNewGoal={addGoalHandler} />
+      <FlatList
+        data={myGoals}
+        renderItem={(dataItem) => (
+          <View style={styles.goalItem} key={dataItem.item.id}>
+            <Text style={styles.goalText}>{dataItem.item.text}</Text>
+          </View>
+        )
+        }
+      />
     </View>
+
   );
 }
 
